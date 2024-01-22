@@ -1,6 +1,3 @@
-// Решите загадку: Сколько чисел от 1 до 1000 содержат как минимум одну цифру 3?
-// Напишите ответ здесь:
-
 #include <algorithm>
 #include <cmath>
 #include <iostream>
@@ -9,7 +6,6 @@
 #include <string>
 #include <utility>
 #include <vector>
-
 
 using namespace std;
 
@@ -65,11 +61,12 @@ public:
 
     void AddDocument(int document_id, const string& document) {
         const vector<string> words = SplitIntoWordsNoStop(document);
+        double sum_TF_for_query = 1.0 / words.size();
         
         for(const string& word : words){
-            //суммирует TF слова в строке
-            word_to_document_freqs_[word][document_id] += 1.0 / words.size();     
+            word_to_document_freqs_[word][document_id] += sum_TF_for_query;     
         }
+        
         ++document_count_;
     }
 
@@ -150,16 +147,19 @@ private:
         
         return query;
     }
+
+    void CalculateIDFQuery(map<int, double>& documents_relevance, const string& plus_word) const {
+        for (const auto& [id, TF] : word_to_document_freqs_.at(plus_word)) {
+            documents_relevance[id] += log(document_count_ / static_cast<double>(word_to_document_freqs_.at(plus_word).size())) * TF;
+        }
+    }
+
     vector<Document> FindAllDocuments(const Query& query) const {
         map<int, double> matched_documents;
         
         for(const string& plus_word : query.plus_words){   
             if(word_to_document_freqs_.contains(plus_word)){
-                for(const auto& [id, TF] : word_to_document_freqs_.at(plus_word) ){
-                    //Вычисляем IDF для каждого плюс-слова в word_to_document_freqs_
-                     matched_documents[id] += log(document_count_ / static_cast<double>(word_to_document_freqs_.at(plus_word).size()))
-                                                  * TF;
-                  }
+                CalculateQueryIDF(matched_documents, plus_word);
             }
         }
         
@@ -173,10 +173,10 @@ private:
         
         vector<Document> buffer_of_relevance_id;
         for(const auto& [id, relevance] : matched_documents){
-                buffer.push_back({id, relevance});
+               buffer_of_relevance_id.push_back({id, relevance});
         }
         
-        return buffer;
+        return buffer_of_relevance_id;
     }
 };
     
@@ -203,4 +203,4 @@ int main() {
     
     return 0;
 }
-// Закомитьте изменения и отправьте их в свой репозиторий.
+
