@@ -148,19 +148,19 @@ private:
         return query;
     }
 
-    void CalculateIDFQuery(map<int, double>& documents_relevance, const string& plus_word) const {
-        for (const auto& [id, TF] : word_to_document_freqs_.at(plus_word)) {
-            documents_relevance[id] += log(document_count_ / static_cast<double>(word_to_document_freqs_.at(plus_word).size())) * TF;
-        }
-    }
-
-    vector<Document> FindAllDocuments(const Query& query) const {
-        map<int, double> matched_documents;
-        
-        for(const string& plus_word : query.plus_words){   
-            if(word_to_document_freqs_.contains(plus_word)){
-                CalculateQueryIDF(matched_documents, plus_word);
-            }
+   void CalculateIDFQuery(map<int, double>& documents_relevance, const string& plus_word) const { 
+        for (const auto& [id, TF] : word_to_document_freqs_.at(plus_word)) { 
+            documents_relevance[id] += log(document_count_ / static_cast<double>(word_to_document_freqs_.at(plus_word).size())) * TF; 
+        } 
+    } 
+ 
+    vector<Document> FindAllDocuments(const Query& query) const { 
+        map<int, double> matched_documents; 
+         
+        for(const string& plus_word : query.plus_words){    
+            if(word_to_document_freqs_.contains(plus_word)){ 
+               CalculateIDFQuery(matched_documents, plus_word); 
+            } 
         }
         
         for(const string& minus_word : query.minus_words){
