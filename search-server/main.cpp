@@ -105,7 +105,7 @@ public:
 
     void AddDocument(int document_id, const string& document, DocumentStatus status,
                                    const vector<int>& ratings) {
-        vector<string> words;
+        vector<string> words = SplitIntoWordsNoStop(document);
 
         if (document_id < 0){
             throw invalid_argument ("Документ не был добавлен, так как его id отрицательный"s);
@@ -113,10 +113,6 @@ public:
         
         if(documents_.contains(document_id)){
             throw invalid_argument ("Документ не был добавлен, так как его id совпадает с уже имеющимся"s);
-        }
-        
-        if(!SplitIntoWordsNoStop(document, words)){
-            throw invalid_argument ("Документ не был добавлен, так как содержит спецсимволы"s);
         }
         
         const double inv_word_count = 1.0 / words.size();
@@ -215,18 +211,22 @@ private:
         return stop_words_.count(word) > 0;
     }
 
-    bool SplitIntoWordsNoStop(const string& text, vector<string>& words) const {
+    vector<string> SplitIntoWordsNoStop(const string& text) const {
+         vector<string> words;
+        
         if (IsValidWord(text)) {
             for (const string& word : SplitIntoWords(text)) {
                 if (!IsStopWord(word)) {
                     words.push_back(word);
                 }
             }
-            return true;
+        } else {
+            throw invalid_argument ("Документ не был добавлен, так как содержит спецсимволы"s); 
         }
-
-        return false;
+        
+        return words;
     }
+
 
     static int ComputeAverageRating(const vector<int>& ratings) {
         if (ratings.empty()) {
