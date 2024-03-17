@@ -10,7 +10,8 @@ void OutputParseLine() {
 
 
 void CheckExeptionOutput() {
-    
+    OutputParseLine();
+
     TestExeptionForConstructorWithStopWords();
     TestExeptionForDocumentsWithSameIndex();
     TestExeptionForDocumentsWithNegativeIndex();
@@ -18,11 +19,13 @@ void CheckExeptionOutput() {
     TestExeptionForQueryWithSpecialCharacters();
     TestExeptionForQueryWithMinusWords();
     TestExeptionForGetDocumentId();
-    
+
+    OutputParseLine();
 }
 
 void TestSearchServer() {
     OutputParseLine();
+
     RUN_TEST(TestExcludeStopWordsFromAddedDocumentContent);
     RUN_TEST(TestExcludeDocumentsIfMinusWords);
     RUN_TEST(TestSortAndCalculateByRelevance);
@@ -30,6 +33,7 @@ void TestSearchServer() {
     RUN_TEST(TestOutDocumentsWithPredicate);
     RUN_TEST(TestOutDicumentWithQueryStatus);
     RUN_TEST(TestReturnStatusFromMatchDocument);
+    
     OutputParseLine();
 }
 
