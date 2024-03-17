@@ -121,6 +121,22 @@ SearchServer::QueryWord SearchServer::ParseQueryWord(const std::string& text) co
     return { word, is_minus, IsStopWord(word) };
 }
 
+SearchServer::Query SearchServer::ParseQuery(const std::string& text) const {
+    Query result;
+    for (const std::string& word : SplitIntoWords(text)) {
+        const auto query_word = ParseQueryWord(word);
+        if (!query_word.is_stop) {
+            if (query_word.is_minus) {
+                result.minus_words.insert(query_word.data);
+            }
+            else {
+                result.plus_words.insert(query_word.data);
+            }
+        }
+    }
+    return result;
+}
+
 double SearchServer::ComputeWordInverseDocumentFreq(const std::string& word) const {
         return log(GetDocumentCount() * 1.0 / word_to_document_freqs_.at(word).size());
-    }
+}

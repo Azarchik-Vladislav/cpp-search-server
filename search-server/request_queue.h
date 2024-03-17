@@ -14,24 +14,7 @@ public:
     explicit RequestQueue(const SearchServer& search_server);
     
     template <typename DocumentPredicate>
-    std::vector<Document> AddFindRequest(const std::string& raw_query, DocumentPredicate document_predicate) {
-        auto buffer = search_server_.FindTopDocuments(raw_query, document_predicate);
- 
-        if (requests_.size() != 1440) {
-            AddEmptyResult(buffer);
-            requests_.push_back({ buffer.size() });
-        } else {
-            if (requests_.front().count_finded_queries == 0) {
-                --invalid_results_;
-            }
-            AddEmptyResult(buffer);
-            requests_.pop_front();
-            requests_.push_back({ buffer.size() });
-        }
-
-        return buffer;
-    }
-
+    std::vector<Document> AddFindRequest(const std::string& raw_query, DocumentPredicate document_predicate);
     std::vector<Document> AddFindRequest(const std::string& raw_query, DocumentStatus status);
     std::vector<Document> AddFindRequest(const std::string& raw_query);
 
@@ -47,3 +30,23 @@ private:
     
     void AddEmptyResult(std::vector<Document>& buffer);
 };
+
+template<typename DocumentPredicate>
+inline std::vector<Document> RequestQueue::AddFindRequest(const std::string& raw_query, DocumentPredicate document_predicate) {
+    auto buffer = search_server_.FindTopDocuments(raw_query, document_predicate);
+
+    if (requests_.size() != 1440) {
+        AddEmptyResult(buffer);
+        requests_.push_back({ buffer.size() });
+    }
+    else {
+        if (requests_.front().count_finded_queries == 0) {
+            --invalid_results_;
+        }
+        AddEmptyResult(buffer);
+        requests_.pop_front();
+        requests_.push_back({ buffer.size() });
+    }
+
+    return buffer;
+}

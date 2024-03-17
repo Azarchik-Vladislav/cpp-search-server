@@ -12,17 +12,9 @@ public:
         page_end_(end) {}
     ~IteratorRange() = default;
 
-    auto begin_page() const {
-        return page_begin_;
-    }
-
-    auto end_page() const {
-        return  page_end_;
-    }
-    
-    int size_page() const {
-        return distance(page_begin_, page_end_);
-    }
+    auto begin_page() const;
+    auto end_page() const;
+    int size_page() const;
 
 private:
     template<typename Iterator>
@@ -36,36 +28,11 @@ template<typename IterForContainer>
 class Paginator {
 public:
     Paginator() = default;
+    Paginator(IterForContainer begin, IterForContainer end, int page_size);
 
-    Paginator(IterForContainer begin, IterForContainer end, int page_size) {
-
-        auto iter = begin;
-
-        while (iter != end) {
-            if(page_size == 0){
-                pages_.clear();
-                break;
-            }
-            auto tmp_iter = iter;
-            int size_for_page = std::min(page_size, static_cast<int>(std::distance(iter, end)));
-
-            std::advance(tmp_iter, size_for_page);
-
-            pages_.push_back({ iter, tmp_iter });
-            std::advance(iter, size_for_page);
-        }
-    }
-    auto begin() const {
-        return  pages_.begin();
-    }
-
-    auto end() const {
-        return  pages_.end();
-    }
-
-    int size() const {
-        return  pages_.size();
-    }
+    auto begin() const;
+    auto end() const;
+    int size() const;
 
 private:
     std::vector<IteratorRange<IterForContainer>> pages_;
@@ -82,4 +49,54 @@ std::ostream& operator<<(std::ostream& out, IteratorRange<Iterator> iter) {
         out << *it;
     }
     return out;
+}
+
+template<typename It>
+auto IteratorRange<It>::begin_page() const {
+        return page_begin_;
+}
+
+template<typename It>
+auto IteratorRange<It>::end_page() const {
+        return  page_end_;
+}
+
+template<typename It>
+int IteratorRange<It>::size_page() const {
+    return distance(page_begin_, page_end_);
+}
+
+template<typename IterForContainer>
+Paginator<IterForContainer>::Paginator(IterForContainer begin, IterForContainer end, int page_size) {
+
+    auto iter = begin;
+
+    while (iter != end) {
+        if (page_size == 0) {
+            pages_.clear();
+            break;
+        }
+        auto tmp_iter = iter;
+        int size_for_page = std::min(page_size, static_cast<int>(std::distance(iter, end)));
+
+        std::advance(tmp_iter, size_for_page);
+
+        pages_.push_back({ iter, tmp_iter });
+        std::advance(iter, size_for_page);
+    }
+}
+
+template<typename IterForContainer>
+auto Paginator<IterForContainer>::begin() const {
+    return pages_.begin();
+}
+
+template<typename IterForContainer>
+auto Paginator<IterForContainer>::end() const {
+    return  pages_.end();
+}
+
+template<typename IterForContainer>
+int Paginator<IterForContainer>::size() const {
+    return  pages_.size();
 }
