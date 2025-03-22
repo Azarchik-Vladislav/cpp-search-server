@@ -7,6 +7,7 @@ void TestExcludeStopWordsFromAddedDocumentContent() {
     const int doc_id = 42;
     const std::string content = "cat in the city"s;
     const std::vector<int> ratings = {1, 2, 3};
+
     {
         SearchServer server(""s);
         server.AddDocument(doc_id, content, DocumentStatus::ACTUAL, ratings);
@@ -28,8 +29,6 @@ void TestExcludeStopWordsFromAddedDocumentContent() {
 };
 
 // Тест проверяет, что поисковая система исключает стоп-слова при вводе поискового запроса
-
-
 void TestExcludeDocumentsIfMinusWords() {
     const int doc_id = 42;
     const std::string content = "cat in the city"s;
@@ -114,8 +113,8 @@ void TestOutDocumentsWithPredicate() {
     server.AddDocument(2, "ухоженный пёс выразительные глаза"s, DocumentStatus::ACTUAL, {5, -12, 2, 1});
     server.AddDocument(3, "покрашен новый столб"s, DocumentStatus::IRRELEVANT, {5, -1, 2, 1});
 
-    ASSERT_EQUAL(server.FindTopDocuments("кот"s, [](int, DocumentStatus, int rating) { 
-                                                                         return rating == 3;}).size(), 1u);
+    ASSERT_EQUAL(server.FindTopDocuments("кот"s, [](int, DocumentStatus, int rating) {
+                                                                                      return rating == 3;}).size(), 1u);          
 }
 
 void TestOutDicumentWithQueryStatus() {

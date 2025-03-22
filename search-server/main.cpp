@@ -3,7 +3,6 @@
 
 #include "test_programm_functions.h"
 
-
 using namespace std;
 
 int main() {

@@ -12,11 +12,12 @@ void AssertEqualImpl(const T& t, const U& u, const std::string& t_str, const std
                      const std::string& func, unsigned line, const std::string& hint = "") {
     using namespace std::string_literals;
 
-    if (t != u) {
+    if(t != u) {
         std::cerr << std::boolalpha;
         std::cerr << file << "("s << line << "): "s << func << ": "s;
         std::cerr << "ASSERT_EQUAL("s << t_str << ", "s << u_str << ") failed: "s;
         std::cerr << t << " != "s << u << "."s;
+        
         if (!hint.empty()) {
             std::cerr << " Hint: "s << hint;
         }
@@ -37,8 +38,9 @@ template <typename T>
 std::ostream& operator<<(std::ostream& output, const std::vector<T>& items) {
     using namespace std::string_literals;
 
-    output << "["s;
     bool first_item = true;
+    
+    output << "["s;
     for (const T& item : items) {
         if (!first_item) {
             output << ", "s;
@@ -47,6 +49,7 @@ std::ostream& operator<<(std::ostream& output, const std::vector<T>& items) {
         first_item = false;
     }
     output << "]"s;
+
     return output;
 }
 

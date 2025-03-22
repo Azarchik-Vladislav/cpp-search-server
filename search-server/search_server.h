@@ -31,22 +31,21 @@ public:
 
     template <typename DocumentPredicate>
     std::vector<Document> FindTopDocuments(const std::string& raw_query,
-        DocumentPredicate document_predicate) const;
+                                           DocumentPredicate document_predicate) const;
     std::vector<Document> FindTopDocuments(const std::string& raw_query, DocumentStatus status) const;
     std::vector<Document> FindTopDocuments(const std::string& raw_query) const;
 
     int GetDocumentCount() const;
-
     int GetDocumentId(int index) const;
 
     std::tuple<std::vector<std::string>, DocumentStatus> MatchDocument(const std::string& raw_query,
-        int document_id) const;
-
+                                                                       int document_id) const;
 private:
     struct DocumentData {
         int rating;
         DocumentStatus status;
     };
+
     const std::set<std::string> stop_words_;
     std::map<std::string, std::map<int, double>> word_to_document_freqs_;
     std::map<int, DocumentData> documents_;
@@ -79,12 +78,13 @@ private:
 
     template <typename DocumentPredicate>
     std::vector<Document> FindAllDocuments(const Query& query,
-        DocumentPredicate document_predicate) const;
+                                           DocumentPredicate document_predicate) const;
 };
 
 template<typename StringContainer>
 SearchServer::SearchServer(const StringContainer& stop_words)
     : stop_words_(MakeUniqueNonEmptyStrings(stop_words)) {
+
     if (!std::all_of(stop_words_.begin(), stop_words_.end(), IsValidWord)) {
         throw std::invalid_argument("Some of stop words are invalid");
     }
@@ -100,11 +100,11 @@ std::vector<Document> SearchServer::FindTopDocuments(const std::string& raw_quer
         [](const Document& lhs, const Document& rhs) {
             if (std::abs(lhs.relevance - rhs.relevance) < EPSILON) {
                 return lhs.rating > rhs.rating;
-            }
-            else {
+            } else {
                 return lhs.relevance > rhs.relevance;
             }
         });
+
     if (matched_documents.size() > MAX_RESULT_DOCUMENT_COUNT) {
         matched_documents.resize(MAX_RESULT_DOCUMENT_COUNT);
     }
@@ -119,9 +119,11 @@ std::vector<Document> SearchServer::FindAllDocuments(const Query& query, Documen
         if (word_to_document_freqs_.count(word) == 0) {
             continue;
         }
+
         const double inverse_document_freq = ComputeWordInverseDocumentFreq(word);
         for (const auto& [document_id, term_freq] : word_to_document_freqs_.at(word)) {
             const auto& document_data = documents_.at(document_id);
+
             if (document_predicate(document_id, document_data.status, document_data.rating)) {
                 document_to_relevance[document_id] += term_freq * inverse_document_freq;
             }
@@ -132,6 +134,7 @@ std::vector<Document> SearchServer::FindAllDocuments(const Query& query, Documen
         if (word_to_document_freqs_.count(word) == 0) {
             continue;
         }
+
         for (const auto& [document_id, _] : word_to_document_freqs_.at(word)) {
             document_to_relevance.erase(document_id);
         }
@@ -142,5 +145,6 @@ std::vector<Document> SearchServer::FindAllDocuments(const Query& query, Documen
         matched_documents.push_back(
             { document_id, relevance, documents_.at(document_id).rating });
     }
+    
     return matched_documents;
 }

@@ -14,5 +14,6 @@ std::set<std::string> MakeUniqueNonEmptyStrings(const StringContainer& strings) 
             non_empty_strings.insert(str);
         }
     }
+    
     return non_empty_strings;
 }

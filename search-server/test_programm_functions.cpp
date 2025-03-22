@@ -53,5 +53,4 @@ void TestRequestQueue() {
     RUN_TEST(TestNoFullQueue);
 
     OutputParseLine();
-    
 }

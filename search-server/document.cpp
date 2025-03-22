@@ -18,5 +18,4 @@ std::ostream& operator<<(std::ostream& out, Document document) {
     out << "rating = "s << document.rating << " }";
 
     return out;
-
 }

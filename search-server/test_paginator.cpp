@@ -4,8 +4,6 @@
 using namespace std::string_literals;
 
 void TestCountOfPages() {
-    
-    
     {
         SearchServer search_server("and with"s);
         search_server.AddDocument(1, "funny pet and nasty rat"s, DocumentStatus::ACTUAL, { 7, 2, 7 });
@@ -53,12 +51,10 @@ void TestCountOfPages() {
         //Ожидаемое количестов страниц == 1
         ASSERT_EQUAL_HINT(pages.size(), 1, "Incorrect pagination"s);
     }
-    
 }
 
 //Проверка случая, когда количество запросов в последней странице меньше размера самой страницы
 void TestEndPage() {
-
     {
         SearchServer search_server("and with"s);
         search_server.AddDocument(1, "funny pet and nasty rat"s, DocumentStatus::ACTUAL, { 7, 2, 7 });
@@ -73,5 +69,4 @@ void TestEndPage() {
         //Ожидаемое количество документов в странице == 1
         ASSERT_EQUAL_HINT(page.size_page(), 1, "Incorrect pagination"s);
     }
-
 }

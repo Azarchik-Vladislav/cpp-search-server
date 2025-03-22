@@ -1,7 +1,8 @@
 
 #include "request_queue.h"
 
-RequestQueue::RequestQueue(const SearchServer& search_server) : search_server_(search_server) {}
+RequestQueue::RequestQueue(const SearchServer& search_server) : search_server_(search_server) {
+}
 
 std::vector<Document> RequestQueue::AddFindRequest(const std::string& raw_query, DocumentStatus status) {
     return AddFindRequest(
@@ -18,10 +19,10 @@ int16_t RequestQueue::GetNoResultRequests() const {
     return invalid_results_;
 }
 
-void RequestQueue::AddEmptyResult(std::vector<Document>& buffer){
-        if(buffer.empty()){
-            ++invalid_results_;
-        } else {
-            return;
-        }
+void RequestQueue::AddEmptyResult(std::vector<Document>& buffer) {
+    if(buffer.empty()){
+        ++invalid_results_;
+    } else {
+        return;
     }
+}

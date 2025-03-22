@@ -6,12 +6,9 @@
 #include <vector>
 #include <utility>
 
-
 #include "assert.h"
 #include "document.h"
 #include "search_server.h"
-
-
 
 void TestExcludeStopWordsFromAddedDocumentContent();
 void TestExcludeDocumentsIfMinusWords();
@@ -20,5 +17,3 @@ void TestCalculateRatingFromAddDocuments();
 void TestOutDocumentsWithPredicate();
 void TestOutDicumentWithQueryStatus();
 void TestReturnStatusFromMatchDocument();
-
-

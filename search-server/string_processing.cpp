@@ -9,11 +9,11 @@ std::vector<std::string> SplitIntoWords(const std::string& text) {
                 words.push_back(word);
                 word.clear();
             }
-        }
-        else {
+        } else {
             word += c;
         }
     }
+    
     if (!word.empty()) {
         words.push_back(word);
     }
